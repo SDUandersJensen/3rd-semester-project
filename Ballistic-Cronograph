@@ -1,0 +1,64 @@
+# 3rd-semester-project
+This is some documentation of my 3rd Semester Project Mechanical engineering at South Danish University   The project was a chronograph which could messure the velocity of a bullet, further test and research proff that the arduino was only capable to messure velocity slower projectile, like a nerf toy projectile   the crono was made using Infrared receivers and emitters for sensors   Arduino and C++ for calculations and to obtain the signal   and excel to run statistics on the results.  the arduino source code can be found here: 
+
+int thresh =52;// this is the treshhold
+
+int sens1 = A1; //sensor 1 port
+int sens2 =A5; //sensor 2 port
+unsigned long Time,Time2; 
+float mps,elap;
+int val1,val2; //values from sensors. 
+
+void setup() 
+{
+  Serial.begin(9600);
+  pinMode(sens1,INPUT);
+  pinMode(sens2,INPUT);
+
+//**************************** this sets up the excel sheet and ready the conection 
+Serial.begin(9600); // the bigger number the better
+Serial.println("CLEARDATA"); //clears up any data 
+Serial.println("LABEL,Tid,Tiden Siden Start,Data"); //sets up the labels in excel
+Serial.println("RESETTIMER"); //sets data time to 0 
+//***************************
+}
+
+void loop() 
+{
+  // begining of loop
+  Serial.print("DATA,TIME,TIMER,"); //writes the time in the first column A and the time since the measurements started in column B
+  //Serial.print("venter");
+  val1 = analogRead(sens1);
+  val2 = analogRead(sens2);
+  
+  //**********************************loop while greater than threshold 
+  while(val1 >= thresh)
+  {
+    val1 = analogRead(sens1);
+  }
+  //**********************************loop while less than threshold 
+  while(val1 <= thresh)
+  {
+    Time=micros();
+    val1 = analogRead(sens1);
+  }
+  //*********************************loop while greater than threshold 
+  while(val2 >= thresh)
+  {
+    val2= analogRead(sens2);
+  }
+  //*********************************loop while less than threshold 
+ while(val2 <= thresh)
+ {
+  Time2 = micros();
+  val2 = analogRead(sens2);
+ }
+ //******************************** calculate velocity 
+ 
+elap = Time2-Time;
+mps = 120000/elap;// micrometer divide by microsec gives velocity in micrometer/microsec = m/s 
+
+Serial.print(mps); //writes the velocity in excel
+Serial.println(); // skips to next row 
+}
+//end of loop
